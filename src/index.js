@@ -1,3 +1,4 @@
+// Need to import these stuff to define JSX syntax and be able to use the React functions
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
