@@ -1,14 +1,16 @@
-// Need to import these stuff to define JSX syntax and be able to use the React functions
+// Need to import these libraries to define JSX syntax and use React functions
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 
 /*
-In React, function components are a simpler way to write components that only contain a render method and don’t have 
+NOTE: In React, function components are a simpler way to write components that only contain a render method and don’t have 
 their own state. Instead of defining a class which extends React.Component, we can write a function that takes props as 
 input and returns what should be rendered. Function components are less tedious to write than classes, and many 
 components can be expressed this way.
 */
+
+// Square component represents each square in the tic-tac-toe board
 function Square(props) {
   return (
     <button 
@@ -24,11 +26,15 @@ function Square(props) {
   );
 }
 
+// Board component represents the tic-tac-toe board
 class Board extends React.Component {
+  // Renders a single square with the specified value
   renderSquare(i) {
     let winnerSquare = false;
+    // Check if the current square is part of the winning line
     if (this.props.winnerLine && this.props.winnerLine.includes(i))
       winnerSquare = true;
+    // Render the Square component with appropriate props
     return <Square 
             winnerSquare={winnerSquare}
             value={this.props.squares[i]} 
@@ -36,6 +42,7 @@ class Board extends React.Component {
             />;
   }
 
+  // Renders the entire board with squares
   render() {
     return (
       <div>
@@ -59,7 +66,9 @@ class Board extends React.Component {
   }
 }
 
+// Game component represents the tic-tac-toe game
 class Game extends React.Component {
+  // Constructor to initialize the state
   constructor(props) {
     super(props);
     this.state = {
@@ -74,6 +83,7 @@ class Game extends React.Component {
     }
   }
 
+  // Event handler for clicking on a square
   handleClick(i) {
     let row, col;
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
@@ -81,6 +91,7 @@ class Game extends React.Component {
     const squares = current.squares.slice();
     const [winner, winnerLine] = calculateWinner(current.squares);
 
+    // Check if there's a winner or if the square is already filled
     if (winner || squares[i]) {
       return;
     }
@@ -88,13 +99,10 @@ class Game extends React.Component {
       [row, col] = getRowColumn(i);
     }
 
-    if (this.state.xIsNext) {
-      squares[i] = 'X';
-    }
-    else {
-      squares[i] = 'O';
-    }
+    // Set the value of the clicked square based on the player
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
 
+    // Update the game state
     this.setState({
       history: history.concat([{
         squares: squares,
@@ -107,6 +115,7 @@ class Game extends React.Component {
     })
   }
 
+  // Jump to a specific step in the game history
   jumpTo(step) {
     this.setState({
       stepNumber: step,
@@ -114,6 +123,7 @@ class Game extends React.Component {
     })
   }
 
+  // Reset the game to its initial state
   reset() {
     this.setState({
       history: [{
@@ -127,10 +137,13 @@ class Game extends React.Component {
     })
   }
 
+  // Render the game board and status
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const [winner, winnerLine] = calculateWinner(current.squares);
+
+    // Generate list of moves in the game history
     const moves = history.map((step, move) => {
       const desc = move ? `Go to move #${move} (${history[move].row}, ${history[move].col})` : 'Go to game start';
       return (
@@ -142,6 +155,7 @@ class Game extends React.Component {
       );
     });
 
+    // Determine game status
     let status;
     if (winner) {
       status = 'Winner: ' + winner;
@@ -151,6 +165,7 @@ class Game extends React.Component {
     else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
+    // Render the game components
     return (
       <div className="game">
         <div className="game-board">
@@ -170,11 +185,11 @@ class Game extends React.Component {
   }
 }
 
-// ========================================
-
+// Render the Game component to the DOM
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<Game />);
 
+// Function to get row and column indices from square value
 function getRowColumn(squareVal) {
   let row, col;
   const rows = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
@@ -188,6 +203,7 @@ function getRowColumn(squareVal) {
   return [row, col];
 }
 
+// Function to calculate the winner of the game
 function calculateWinner(squares) {
   const lines = [
     [0, 1, 2],
@@ -207,5 +223,3 @@ function calculateWinner(squares) {
   }
   return [null, null];
 }
-
-
