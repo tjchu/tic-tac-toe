@@ -26,49 +26,42 @@ function Square(props) {
   );
 }
 
-/*
-NOTE: In React, you use extends React.Component when you want to create a class component that manages 
-its own state and/or has lifecycle methods.
-*/
-
 // Board component represents the tic-tac-toe board
-class Board extends React.Component {
+function Board(props) {
   // Renders a single square with the specified value
-  renderSquare(i) {
+  function renderSquare(i) {
     let winnerSquare = false;
     // Check if the current square is part of the winning line
-    if (this.props.winnerLine && this.props.winnerLine.includes(i))
+    if (props.winnerLine && props.winnerLine.includes(i))
       winnerSquare = true;
     // Render the Square component with appropriate props
     return <Square 
             winnerSquare={winnerSquare}
-            value={this.props.squares[i]} 
-            onClick={() => this.props.onClick(i)}
+            value={props.squares[i]} 
+            onClick={() => props.onClick(i)}
             />;
   }
 
   // Renders the entire board with squares
-  render() {
-    return (
-      <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+  return (
+    <div>
+      <div className="board-row">
+        {renderSquare(0)}
+        {renderSquare(1)}
+        {renderSquare(2)}
       </div>
-    );
-  }
+      <div className="board-row">
+        {renderSquare(3)}
+        {renderSquare(4)}
+        {renderSquare(5)}
+      </div>
+      <div className="board-row">
+        {renderSquare(6)}
+        {renderSquare(7)}
+        {renderSquare(8)}
+      </div>
+    </div>
+  );
 }
 
 // Game component represents the tic-tac-toe game
