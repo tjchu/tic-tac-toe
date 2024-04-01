@@ -26,6 +26,11 @@ function Square(props) {
   );
 }
 
+/*
+NOTE: In React, you use extends React.Component when you want to create a class component that manages 
+its own state and/or has lifecycle methods.
+*/
+
 // Board component represents the tic-tac-toe board
 class Board extends React.Component {
   // Renders a single square with the specified value
