@@ -1,5 +1,5 @@
 // Need to import these libraries to define JSX syntax and use React functions
-import React from 'react';
+import React, { useState }  from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 
@@ -64,6 +64,91 @@ function Board(props) {
   );
 }
 
+// Game component represents the tic-tac-toe game
+function Game() {
+  // Initialize the states
+  const [history, setHistory] = useState([{squares: Array(9).fill(null), row: null, col: null}]);
+  const [stepNumber, setStepNumber] = useState(0);
+  const [xIsNext, setXIsNext] = useState(true);
+  const [winnerLine, setWinnerLine] = useState(null);
+
+  // Event handler for clicking on a square
+  function handleClick(i) {
+    let row, col;
+    const current = history[stepNumber];
+    const squares = current.squares.slice();
+    const [winner, winnerLine] = calculateWinner(current.squares);
+
+    // Check if there's a winner or if the square is already filled
+    if (winner || squares[i]) {
+      return;
+    } else {
+      [row, col] = getRowColumn(i);
+    }
+
+    // Set the value of the clicked square based on the player
+    squares[i] = xIsNext ? 'X' : 'O';
+
+    // Update the game state
+    setHistory(history.concat([{ squares, row, col }]));
+    setStepNumber(history.length);
+    setXIsNext(!xIsNext);
+    setWinnerLine(winnerLine);
+  }
+
+  // Jump to a specific step in the game history
+  function jumpTo(step) {
+    setStepNumber(step);
+    setXIsNext(xIsNext);
+  }
+
+  // Reset the game to its initial state
+  function reset() {
+    setHistory([{ squares: Array(9).fill(null), row: null, col: null }]);
+    setStepNumber(0);
+    setXIsNext(true);
+    setWinnerLine(null);
+  }
+
+  const current = history[stepNumber];
+  const [winner] = calculateWinner(current.squares);
+
+  // Generate list of moves in the game history
+  const moves = history.map((step, move) => {
+    const desc = move ? `Go to move #${move} (${history[move].row}, ${history[move].col})` : 'Go to game start';
+    return (
+      <li className={`${stepNumber === move ? "selected-move" : ""}`} key={move}>
+        <button id="reset" onClick={() => jumpTo(move)}>{desc}</button>
+      </li>
+    );
+  });
+
+  // Determine game status
+  let status;
+  if (winner) {
+    status = 'Winner: ' + winner;
+  } else if (history.length === 10 && stepNumber === 9) {
+    status = "Draw";
+  } else {
+    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+  }
+
+  // Render the game components
+  return (
+    <div className="game">
+      <div className="game-board">
+        <Board squares={current.squares} winnerLine={winnerLine} onClick={handleClick} />
+      </div>
+      <div className="game-info">
+        <div>{status}</div>
+        <ol>{moves}</ol>
+        <button id="reset" onClick={reset}>Reset</button>
+      </div>
+    </div>
+  );
+}
+
+/*
 // Game component represents the tic-tac-toe game
 class Game extends React.Component {
   // Constructor to initialize the state
@@ -182,7 +267,7 @@ class Game extends React.Component {
     );
   }
 }
-
+*/
 // Render the Game component to the DOM
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<Game />);
