@@ -1,6 +1,10 @@
 body {
   font: 14px "Century Gothic", Futura, sans-serif;
   margin: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 ol, ul {
